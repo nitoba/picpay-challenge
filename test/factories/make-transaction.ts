@@ -1,15 +1,15 @@
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
 import {
-  Transfer,
-  TransferProps,
-} from '@/domain/transaction/enterprise/entities/transfer'
+  Transaction,
+  TransactionProps,
+} from '@/domain/transaction/enterprise/entities/transaction'
 import { makeWallet } from './make-wallet'
 
-export function makeTransfer(
-  override: Partial<TransferProps> = {},
+export function makeTransaction(
+  override: Partial<TransactionProps> = {},
   id?: UniqueEntityID,
-): Transfer {
-  return Transfer.create(
+): Transaction {
+  return Transaction.create(
     {
       amount: Math.round(Math.random() * 100),
       dirWallet: makeWallet(),

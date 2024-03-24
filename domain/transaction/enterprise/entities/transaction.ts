@@ -1,15 +1,15 @@
 import { AggregateRoot } from '@/core/entities/aggregate-root'
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
 import { Wallet } from './wallet'
-import { TransferCreated } from '../events/transfer-created'
+import { TransactionCreated } from '../events/transaction-created'
 
-export interface TransferProps {
+export interface TransactionProps {
   amount: number
   sourceWallet: Wallet
   dirWallet: Wallet
 }
 
-export class Transfer extends AggregateRoot<TransferProps> {
+export class Transaction extends AggregateRoot<TransactionProps> {
   get amount() {
     return this.props.amount
   }
@@ -22,20 +22,20 @@ export class Transfer extends AggregateRoot<TransferProps> {
     return this.props.dirWallet
   }
 
-  static create(props: TransferProps, id?: UniqueEntityID): Transfer {
-    const transfer = new Transfer(
+  static create(props: TransactionProps, id?: UniqueEntityID): Transaction {
+    const transaction = new Transaction(
       {
         ...props,
       },
       id,
     )
 
-    const isNewTransfer = !id
+    const isNewTransaction = !id
 
-    if (isNewTransfer) {
-      transfer.addDomainEvent(new TransferCreated(transfer))
+    if (isNewTransaction) {
+      transaction.addDomainEvent(new TransactionCreated(transaction))
     }
 
-    return transfer
+    return transaction
   }
 }

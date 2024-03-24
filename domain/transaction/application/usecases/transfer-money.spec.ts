@@ -1,32 +1,31 @@
 import { InMemoryWalletRepository } from '@/test/repositories/in-memory-wallet-repository'
 import { TransferMoneyUseCase } from './transfer-money'
 import { InMemoryCostumerRepository } from '@/test/repositories/in-memory-costumer-repository'
-import { InMemoryTransferRepository } from '@/test/repositories/in-memory-transfer-repository'
+import { InMemoryTransactionRepository } from '@/test/repositories/in-memory-transaction-repository'
 import { makeCostumer } from '@/test/factories/make-costumer'
 import { makeWallet } from '@/test/factories/make-wallet'
-import { FakeTransferGateway } from '@/test/gateways/fake-transfer-gateway'
+import { FakeTransactionGateway } from '@/test/gateways/fake-transaction-gateway'
 import { makeRetailer } from '@/test/factories/make-retailer'
 
-describe('Transfer Money UseCase', () => {
+describe('Transaction Money UseCase', () => {
   let useCase: TransferMoneyUseCase
   let walletRepository: InMemoryWalletRepository
   let costumerRepository: InMemoryCostumerRepository
-  let transferRepository: InMemoryTransferRepository
-  let transferGateway: FakeTransferGateway
+  let transactionRepository: InMemoryTransactionRepository
+  let transactionGateway: FakeTransactionGateway
   beforeEach(() => {
     walletRepository = new InMemoryWalletRepository()
     costumerRepository = new InMemoryCostumerRepository()
-    transferRepository = new InMemoryTransferRepository()
-    transferGateway = new FakeTransferGateway()
+    transactionRepository = new InMemoryTransactionRepository()
+    transactionGateway = new FakeTransactionGateway()
     useCase = new TransferMoneyUseCase(
-      costumerRepository,
       walletRepository,
-      transferRepository,
-      transferGateway,
+      transactionRepository,
+      transactionGateway,
     )
   })
 
-  it('should not be able to transfer money if amount is not valid', async () => {
+  it('should not be able to transaction money if amount is not valid', async () => {
     const result = await useCase.execute({
       amount: 0,
       payerId: 'invalid-id',
@@ -38,7 +37,7 @@ describe('Transfer Money UseCase', () => {
     expect(result.value).toEqual(new Error('Amount must be greater than 0'))
   })
 
-  it('should not be able to transfer money if payer wallet not exists', async () => {
+  it('should not be able to transaction money if payer wallet not exists', async () => {
     const result = await useCase.execute({
       amount: 100,
       payerId: 'invalid-id',
@@ -50,7 +49,7 @@ describe('Transfer Money UseCase', () => {
     expect(result.value).toEqual(new Error('Payer Wallet not found'))
   })
 
-  it('should not be able to transfer money if wallet payee not exists', async () => {
+  it('should not be able to transaction money if wallet payee not exists', async () => {
     const costumer = makeCostumer()
     const wallet = makeWallet({ ownerId: costumer.id })
     walletRepository.wallets.push(wallet)
@@ -66,13 +65,13 @@ describe('Transfer Money UseCase', () => {
     expect(result.value).toEqual(new Error('Payee Wallet not found'))
   })
 
-  it('should not be able to transfer money if gateway was not authorized', async () => {
-    const transferGatewaySpy = vi.spyOn(
-      transferGateway,
-      'isAuthorizedToTransfer',
+  it('should not be able to transaction money if gateway was not authorized', async () => {
+    const transactionGatewaySpy = vi.spyOn(
+      transactionGateway,
+      'isAuthorizedToTransaction',
     )
 
-    transferGatewaySpy.mockResolvedValueOnce(false)
+    transactionGatewaySpy.mockResolvedValueOnce(false)
 
     const costumer = makeCostumer()
     const payee = makeCostumer()
@@ -88,10 +87,10 @@ describe('Transfer Money UseCase', () => {
     })
 
     expect(result.isLeft()).toBe(true)
-    expect(result.value).toEqual(new Error('Unauthorized to transfer'))
+    expect(result.value).toEqual(new Error('Unauthorized to transaction'))
   })
 
-  it('should not be able to transfer money from retailer payer', async () => {
+  it('should not be able to transaction money from retailer payer', async () => {
     const costumer = makeRetailer()
     const payee = makeCostumer()
     const sourceWallet = makeWallet({
@@ -112,7 +111,7 @@ describe('Transfer Money UseCase', () => {
     expect(result.isLeft()).toBe(true)
   })
 
-  it('should able to transfer money', async () => {
+  it('should able to transaction money', async () => {
     const costumer = makeCostumer()
     const payee = makeCostumer()
     const sourceWallet = makeWallet({ ownerId: costumer.id, balance: 100 })
@@ -127,9 +126,9 @@ describe('Transfer Money UseCase', () => {
     })
 
     expect(result.isRight()).toBe(true)
-    expect(transferRepository.transfers).toHaveLength(1)
-    expect(transferRepository.transfers[0].amount).toBe(100)
-    expect(transferRepository.transfers[0].sourceWallet.balance).toBe(0)
-    expect(transferRepository.transfers[0].dirWallet.balance).toBe(200)
+    expect(transactionRepository.transactions).toHaveLength(1)
+    expect(transactionRepository.transactions[0].amount).toBe(100)
+    expect(transactionRepository.transactions[0].sourceWallet.balance).toBe(0)
+    expect(transactionRepository.transactions[0].dirWallet.balance).toBe(200)
   })
 })

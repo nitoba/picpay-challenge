@@ -1,10 +1,10 @@
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
-import { Transfer } from './transfer'
+import { Transaction } from './transaction'
 import { Wallet } from './wallet'
 
-describe('Transfer', () => {
-  it('should create a transfer', () => {
-    const result = Transfer.create({
+describe('Transaction', () => {
+  it('should create a transaction', () => {
+    const result = Transaction.create({
       amount: 100,
       sourceWallet: Wallet.create({
         ownerType: 'costumer',
@@ -18,6 +18,6 @@ describe('Transfer', () => {
       }).value as Wallet,
     })
 
-    expect(result).toBeInstanceOf(Transfer)
+    expect(result).toBeInstanceOf(Transaction)
   })
 })

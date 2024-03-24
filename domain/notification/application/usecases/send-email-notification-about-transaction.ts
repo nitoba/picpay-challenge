@@ -3,13 +3,13 @@ import { Notification } from '../../enterprise/enterprise/entities/notification'
 import { NotificationSender } from '../messaging/notification-sender'
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
 
-interface SendEmailNotificationAboutTransferUseCaseRequest {
+interface SendEmailNotificationAboutTransactionUseCaseRequest {
   payeeId: string
   subject: string
   body: string
 }
 
-export class SendEmailNotificationAboutTransferUseCase {
+export class SendEmailNotificationAboutTransactionUseCase {
   constructor(
     private readonly notificationSender: NotificationSender,
     private readonly costumerRepository: CostumerRepository,
@@ -19,7 +19,7 @@ export class SendEmailNotificationAboutTransferUseCase {
     body,
     payeeId,
     subject,
-  }: SendEmailNotificationAboutTransferUseCaseRequest): Promise<void> {
+  }: SendEmailNotificationAboutTransactionUseCaseRequest): Promise<void> {
     const costumer = await this.costumerRepository.findById(
       new UniqueEntityID(payeeId),
     )

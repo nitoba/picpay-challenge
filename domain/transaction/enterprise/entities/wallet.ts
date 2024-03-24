@@ -3,9 +3,11 @@ import { Entity } from '@/core/entities/entity'
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
 import { InvalidBalanceError } from './errors/invalid-balance-error'
 
+export type OwnerType = 'costumer' | 'retailer'
+
 export interface WalletProps {
   ownerId: UniqueEntityID
-  ownerType: 'costumer' | 'retailer'
+  ownerType: OwnerType
   balance: number
 }
 

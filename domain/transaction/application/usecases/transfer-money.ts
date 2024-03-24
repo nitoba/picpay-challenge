@@ -1,11 +1,10 @@
 import { Either, left, right } from '@/core/either'
-import { CostumerRepository } from '../repositories/costumer-repository'
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
 import { WalletRepository } from '../repositories/wallet-repository'
-import { Transfer } from '../../enterprise/entities/transfer'
-import { TransferRepository } from '../repositories/transfer-repository'
-import { TransferService } from '../../enterprise/services/transfer-service'
-import { TransferGateway } from '../gateways/transfer-gateway'
+import { Transaction } from '../../enterprise/entities/transaction'
+import { TransactionRepository } from '../repositories/transaction-repository'
+import { TransactionService } from '../../enterprise/services/transaction-service'
+import { TransactionGateway } from '../gateways/transaction-gateway'
 
 type TransferMoneyRequest = {
   amount: number
@@ -17,10 +16,9 @@ type TransferMoneyResponse = Either<Error, void>
 
 export class TransferMoneyUseCase {
   constructor(
-    private readonly costumerRepository: CostumerRepository,
     private readonly walletRepository: WalletRepository,
-    private readonly transferRepository: TransferRepository,
-    private readonly transferGateway: TransferGateway,
+    private readonly transactionRepository: TransactionRepository,
+    private readonly transactionGateway: TransactionGateway,
   ) {}
 
   async execute({
@@ -52,26 +50,30 @@ export class TransferMoneyUseCase {
       return left(new Error('Payee Wallet not found'))
     }
 
-    const result = TransferService.transfer(payerWallet, payeeWallet, amount)
+    const result = TransactionService.transaction(
+      payerWallet,
+      payeeWallet,
+      amount,
+    )
 
     if (result.isLeft()) {
       return left(result.value)
     }
 
-    const transfer = Transfer.create({
+    const transaction = Transaction.create({
       amount,
       sourceWallet: payerWallet,
       dirWallet: payeeWallet,
     })
 
-    const isAuthorizedToTransfer =
-      await this.transferGateway.isAuthorizedToTransfer(transfer)
+    const isAuthorizedToTransaction =
+      await this.transactionGateway.isAuthorizedToTransaction(transaction)
 
-    if (!isAuthorizedToTransfer) {
-      return left(new Error('Unauthorized to transfer'))
+    if (!isAuthorizedToTransaction) {
+      return left(new Error('Unauthorized to transaction'))
     }
 
-    await this.transferRepository.save(transfer)
+    await this.transactionRepository.save(transaction)
 
     return right(undefined)
   }

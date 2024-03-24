@@ -1,8 +1,8 @@
 import { Either, left, right } from '@/core/either'
 import { Wallet } from '../entities/wallet'
 
-export class TransferService {
-  static transfer(
+export class TransactionService {
+  static transaction(
     sourceWallet: Wallet,
     dirWallet: Wallet,
     amount: number,

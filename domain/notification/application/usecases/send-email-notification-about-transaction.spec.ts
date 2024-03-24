@@ -1,17 +1,17 @@
 import { FakeNotificationSender } from '@/test/messaging/fake-notification-sender'
-import { SendEmailNotificationAboutTransferUseCase } from './send-email-notification-about-transfer'
+import { SendEmailNotificationAboutTransactionUseCase } from './send-email-notification-about-transaction'
 import { InMemoryCostumerRepository } from '@/test/repositories/in-memory-costumer-repository'
 import { makeCostumer } from '@/test/factories/make-costumer'
 
 describe('Send Notification UseCase', () => {
   let notificationSender: FakeNotificationSender
-  let sendNotificationUseCase: SendEmailNotificationAboutTransferUseCase
+  let sendNotificationUseCase: SendEmailNotificationAboutTransactionUseCase
   let costumerRepository: InMemoryCostumerRepository
 
   beforeEach(() => {
     costumerRepository = new InMemoryCostumerRepository()
     notificationSender = new FakeNotificationSender()
-    sendNotificationUseCase = new SendEmailNotificationAboutTransferUseCase(
+    sendNotificationUseCase = new SendEmailNotificationAboutTransactionUseCase(
       notificationSender,
       costumerRepository,
     )
@@ -25,8 +25,8 @@ describe('Send Notification UseCase', () => {
 
     const request = {
       payeeId: payee.id.toString(),
-      subject: 'New transfer received',
-      body: 'Transfer content',
+      subject: 'New transaction received',
+      body: 'Transaction content',
     }
 
     await sendNotificationUseCase.execute(request)
