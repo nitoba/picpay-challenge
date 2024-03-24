@@ -12,6 +12,19 @@ services:
       POSTGRES_DB: pic_challenge
     volumes:
       - picpay_challenge_pg_data:/bitnami/postgresql
+  rabbitmq:
+    image: bitnami/rabbitmq:latest
+    container_name: "rabbitmq"
+    environment:
+      RABBITMQ_USERNAME: docker
+      RABBITMQ_PASSWORD: docker
+      RABBITMQ_MANAGEMENT_ALLOW_WEB_ACCESS: true
+    ports:
+      - 5672:5672
+      - 15672:15672
+    volumes:
+      - pic_challenge_mq_data:/var/lib/rabbitmq/
 
 volumes:
   picpay_challenge_pg_data:
+  pic_challenge_mq_data:
