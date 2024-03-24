@@ -1,0 +1,66 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum DocumentType {
+  CPF
+  CNPJ
+}
+
+enum WalletType {
+  Costumer
+  Retailer
+}
+
+model User {
+  id             String       @id @default(uuid())
+  name           String
+  email          String       @unique
+  documentType   DocumentType @default(CPF) @map("document_type")
+  documentNumber String       @unique @map("document_number")
+  walletId       String       @map("wallet_id")
+  password       String
+  createdAt      DateTime     @default(now()) @map("created_at")
+  updatedAt      DateTime     @updatedAt @map("updated_at")
+  wallet         Wallet?
+
+  @@unique([documentNumber, documentType])
+  @@map("users")
+}
+
+model Wallet {
+  id      String     @id @default(uuid())
+  balance Decimal    @default(0)
+  ownerId String     @unique @map("owner_id")
+  type    WalletType
+
+  owner        User                  @relation(fields: [ownerId], references: [id])
+  transactions TransationsOnWallet[]
+
+  @@map("wallets")
+}
+
+model Transaction {
+  id                  String  @id @default(uuid())
+  amount              Decimal
+  sourceWalletId      String  @map("source_wallet_id")
+  destinationWalletId String  @map("destination_wallet_id")
+
+  @@map("transactions")
+}
+
+model TransationsOnWallet {
+  sourceWalletId      String @map("source_wallet_id")
+  destinationWalletId String @map("destination_wallet_id")
+  walletId            String @unique @map("wallet_id")
+
+  wallet Wallet @relation(fields: [walletId], references: [id])
+
+  @@id([sourceWalletId, destinationWalletId])
+  @@map("transactions_to_wallets")
+}
