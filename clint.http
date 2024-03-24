@@ -1,2 +1,8 @@
 POST http://localhost:3333/transactions
 Content-Type: application/json
+
+{
+    "amount": 100,
+    "payer": "4f97b0cd-a038-4c5b-943f-efb267be3891",
+    "payee": "99aa9b9d-1990-499d-a528-64e8682e699a"
+}

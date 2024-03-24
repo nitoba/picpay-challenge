@@ -44,7 +44,7 @@ model Wallet {
   ownerId String     @unique @map("owner_id")
   type    WalletType
 
-  owner              User         @relation(fields: [ownerId], references: [id])
+  owner              User         @relation(fields: [ownerId], references: [id], onDelete: Cascade)
   debitTransactions  Transition[] @relation("source_transactions")
   creditTransactions Transition[] @relation("dir_transactions")
 

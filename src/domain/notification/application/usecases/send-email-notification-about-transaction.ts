@@ -2,6 +2,8 @@ import { CostumerRepository } from '@/domain/transaction/application/repositorie
 import { Notification } from '../../enterprise/enterprise/entities/notification'
 import { NotificationSender } from '../messaging/notification-sender'
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
+import { Injectable } from '@nestjs/common'
+import { Either, left, right } from '@/core/either'
 
 interface SendEmailNotificationAboutTransactionUseCaseRequest {
   payeeId: string
@@ -9,6 +11,12 @@ interface SendEmailNotificationAboutTransactionUseCaseRequest {
   body: string
 }
 
+type SendEmailNotificationAboutTransactionUseCaseResponse = Either<
+  Error,
+  boolean
+>
+
+@Injectable()
 export class SendEmailNotificationAboutTransactionUseCase {
   constructor(
     private readonly notificationSender: NotificationSender,
@@ -19,13 +27,13 @@ export class SendEmailNotificationAboutTransactionUseCase {
     body,
     payeeId,
     subject,
-  }: SendEmailNotificationAboutTransactionUseCaseRequest): Promise<void> {
+  }: SendEmailNotificationAboutTransactionUseCaseRequest): Promise<SendEmailNotificationAboutTransactionUseCaseResponse> {
     const costumer = await this.costumerRepository.findById(
       new UniqueEntityID(payeeId),
     )
 
     if (!costumer) {
-      return
+      return left(new Error('Costumer not found'))
     }
 
     const notification = Notification.create({
@@ -34,6 +42,8 @@ export class SendEmailNotificationAboutTransactionUseCase {
       to: costumer.email,
       type: 'email',
     })
-    await this.notificationSender.send(notification)
+    const result = await this.notificationSender.send(notification)
+
+    return right(result)
   }
 }

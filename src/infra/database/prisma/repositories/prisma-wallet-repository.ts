@@ -8,7 +8,7 @@ import { PrismaWalletMapper } from '../mappers/prisma-wallet-mapper'
 @Injectable()
 export class PrismaWalletRepository implements WalletRepository {
   constructor(private readonly prisma: PrismaService) {}
-  async findByOwnerId(id: UniqueEntityID): Promise<Wallet> {
+  async findByOwnerId(id: UniqueEntityID): Promise<Wallet | null> {
     const wallet = await this.prisma.wallet.findUnique({
       where: {
         ownerId: id.toString(),

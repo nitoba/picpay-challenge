@@ -1,4 +1,4 @@
-import { PubSubMessaging } from '@/domain/notification/application/messaging/pubsub-messaging'
+import { PubSubPublisher } from '@/domain/notification/application/messaging/pubsub-publisher'
 import { Module } from '@nestjs/common'
 import { RabbitMqPubSubMessaging } from './pubsub/rabbitmq/rabbitmq-pubsub-messaging'
 import { NotificationSender } from '@/domain/notification/application/messaging/notification-sender'
@@ -8,9 +8,12 @@ import { DatabaseModule } from '../database/database.module'
 import { RabbitMQModule } from '@golevelup/nestjs-rabbitmq'
 import { EnvModule } from '../env/env.module'
 import { EnvService } from '../env/env.service'
+import { PubSubHandler } from '@/domain/notification/application/messaging/pubsub-handler'
+import { RabbitMqPubSubHandler } from './pubsub/rabbitmq/rabbitmq-pubsub-handler'
 
 @Module({
   imports: [
+    EnvModule,
     DatabaseModule,
     RabbitMQModule.forRootAsync(RabbitMQModule, {
       imports: [EnvModule],
@@ -38,8 +41,12 @@ import { EnvService } from '../env/env.service'
   ],
   providers: [
     {
-      provide: PubSubMessaging,
+      provide: PubSubPublisher,
       useClass: RabbitMqPubSubMessaging,
+    },
+    {
+      provide: PubSubHandler,
+      useClass: RabbitMqPubSubHandler,
     },
     {
       provide: NotificationSender,
@@ -47,6 +54,6 @@ import { EnvService } from '../env/env.service'
     },
     SendEmailNotificationAboutTransactionUseCase,
   ],
-  exports: [PubSubMessaging, NotificationSender],
+  exports: [PubSubPublisher, PubSubHandler, NotificationSender],
 })
 export class MessagingModule {}

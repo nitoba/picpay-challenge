@@ -17,15 +17,13 @@ export class PicTransactionGateway implements TransactionGateway {
       this.envService.get('PIC_AUTHORIZE_TRANSACTION_GATEWAY_URL'),
     )
 
-    if (!res.ok) {
-      return false
-    }
+    if (!res.ok) return false
 
-    const data = this.validationBody.parse(await res.json())
+    const validationResult = this.validationBody.safeParse(await res.json())
 
-    const { message } = data
+    if (!validationResult.success) return false
 
-    if (message !== 'Autorizado') {
+    if (validationResult.data.message !== 'Autorizado') {
       return false
     }
 

@@ -1,17 +1,17 @@
 /* eslint-disable no-new */
-import { FakePubSubMessaging } from '@/test/messaging/fake-pubsub-messaging'
+import { FakePubSubPublisher } from '@/test/messaging/fake-pubsub-publisher'
 import { OnTransactionCreated } from './on-transaction-created'
 import { makeTransaction } from '@/test/factories/make-transaction'
 import { InMemoryTransactionRepository } from '@/test/repositories/in-memory-transaction-repository'
 import { waitFor } from '@/test/utils/wait-for'
 
 describe('On Transaction Created Subscriber', () => {
-  let pubSubMessaging: FakePubSubMessaging
+  let pubSubMessaging: FakePubSubPublisher
   let transactionRepository: InMemoryTransactionRepository
 
   beforeAll(() => {
     transactionRepository = new InMemoryTransactionRepository()
-    pubSubMessaging = new FakePubSubMessaging()
+    pubSubMessaging = new FakePubSubPublisher()
     new OnTransactionCreated(pubSubMessaging)
   })
 

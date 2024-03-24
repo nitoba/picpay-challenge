@@ -2,6 +2,7 @@ import { TransactionRepository } from '@/domain/transaction/application/reposito
 import { PrismaService } from '../prisma.service'
 import { Transaction } from '@/domain/transaction/enterprise/entities/transaction'
 import { Injectable } from '@nestjs/common'
+import { DomainEvents } from '@/core/events/domain-events'
 
 @Injectable()
 export class PrismaTransactionRepository implements TransactionRepository {
@@ -34,9 +35,10 @@ export class PrismaTransactionRepository implements TransactionRepository {
           },
         }),
       ])
+      DomainEvents.dispatchEventsForAggregate(transaction.id)
       return true
     } catch (error) {
-      console.log(error)
+      console.log('ERROR: transaction not saved', error)
       return false
     }
   }
