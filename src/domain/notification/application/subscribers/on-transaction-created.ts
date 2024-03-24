@@ -2,7 +2,9 @@ import { DomainEvents } from '@/core/events/domain-events'
 import { EventHandler } from '@/core/events/event-handler'
 import { TransactionCreated } from '@/domain/transaction/enterprise/events/transaction-created'
 import { PubSubMessaging } from '../messaging/pubsub-messaging'
+import { Injectable } from '@nestjs/common'
 
+@Injectable()
 export class OnTransactionCreated implements EventHandler {
   constructor(private readonly pubSubMessaging: PubSubMessaging) {
     this.setupSubscriptions()
