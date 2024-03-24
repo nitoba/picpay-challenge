@@ -17,6 +17,11 @@ enum WalletType {
   Retailer
 }
 
+enum TransactionType {
+  DEBIT
+  CREDIT
+}
+
 model User {
   id             String       @id @default(uuid())
   name           String
@@ -39,28 +44,22 @@ model Wallet {
   ownerId String     @unique @map("owner_id")
   type    WalletType
 
-  owner        User                  @relation(fields: [ownerId], references: [id])
-  transactions TransationsOnWallet[]
+  owner              User         @relation(fields: [ownerId], references: [id])
+  debitTransactions  Transition[] @relation("source_transactions")
+  creditTransactions Transition[] @relation("dir_transactions")
 
   @@map("wallets")
 }
 
-model Transaction {
+model Transition {
   id                  String  @id @default(uuid())
   amount              Decimal
   sourceWalletId      String  @map("source_wallet_id")
   destinationWalletId String  @map("destination_wallet_id")
 
+  sourceWallet      Wallet @relation("source_transactions", fields: [sourceWalletId], references: [id])
+  destinationWallet Wallet @relation("dir_transactions", fields: [destinationWalletId], references: [id])
+
+  @@index([sourceWalletId, destinationWalletId])
   @@map("transactions")
-}
-
-model TransationsOnWallet {
-  sourceWalletId      String @map("source_wallet_id")
-  destinationWalletId String @map("destination_wallet_id")
-  walletId            String @unique @map("wallet_id")
-
-  wallet Wallet @relation(fields: [walletId], references: [id])
-
-  @@id([sourceWalletId, destinationWalletId])
-  @@map("transactions_to_wallets")
 }

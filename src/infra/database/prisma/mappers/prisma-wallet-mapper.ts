@@ -11,7 +11,7 @@ export class PrismaWalletMapper {
       {
         balance: raw.balance.toNumber(),
         ownerId: new UniqueEntityID(raw.ownerId),
-        ownerType: raw.type as unknown as OwnerType,
+        ownerType: raw.type.toLowerCase() as unknown as OwnerType,
       },
       new UniqueEntityID(raw.id),
     ).value as Wallet

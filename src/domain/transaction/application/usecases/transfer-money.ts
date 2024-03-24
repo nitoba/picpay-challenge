@@ -4,6 +4,7 @@ import { WalletRepository } from '../repositories/wallet-repository'
 import { TransactionRepository } from '../repositories/transaction-repository'
 import { TransactionService } from '../../enterprise/services/transaction-service'
 import { TransactionGateway } from '../gateways/transaction-gateway'
+import { Injectable } from '@nestjs/common'
 
 type TransferMoneyRequest = {
   amount: number
@@ -13,6 +14,7 @@ type TransferMoneyRequest = {
 
 type TransferMoneyResponse = Either<Error, void>
 
+@Injectable()
 export class TransferMoneyUseCase {
   constructor(
     private readonly walletRepository: WalletRepository,

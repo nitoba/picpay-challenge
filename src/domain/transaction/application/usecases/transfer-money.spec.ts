@@ -118,8 +118,8 @@ describe('Transaction Money UseCase', () => {
 
     const costumer = makeCostumer()
     const payee = makeCostumer()
-    const sourceWallet = makeWallet({ ownerId: costumer.id, balance: 100 })
-    const dirWallet = makeWallet({ ownerId: payee.id, balance: 100 })
+    const sourceWallet = makeWallet({ ownerId: costumer.id, balance: 10_00 })
+    const dirWallet = makeWallet({ ownerId: payee.id, balance: 10_00 })
     walletRepository.wallets.push(...[sourceWallet, dirWallet])
     costumerRepository.costumers.push(...[costumer, payee])
 
@@ -134,15 +134,15 @@ describe('Transaction Money UseCase', () => {
 
     console.log(walletRepository.wallets)
 
-    expect(walletRepository.wallets[0].balance).toBe(100)
-    expect(walletRepository.wallets[1].balance).toBe(100)
+    expect(walletRepository.wallets[0].balance).toBe(10_00)
+    expect(walletRepository.wallets[1].balance).toBe(10_00)
   })
 
   it('should able to transaction money', async () => {
     const costumer = makeCostumer()
     const payee = makeCostumer()
-    const sourceWallet = makeWallet({ ownerId: costumer.id, balance: 100 })
-    const dirWallet = makeWallet({ ownerId: payee.id, balance: 100 })
+    const sourceWallet = makeWallet({ ownerId: costumer.id, balance: 10_00 })
+    const dirWallet = makeWallet({ ownerId: payee.id, balance: 10_00 })
     walletRepository.wallets.push(...[sourceWallet, dirWallet])
     costumerRepository.costumers.push(...[costumer, payee])
 
@@ -155,7 +155,7 @@ describe('Transaction Money UseCase', () => {
     expect(result.isRight()).toBe(true)
     expect(transactionRepository.transactions).toHaveLength(1)
     expect(transactionRepository.transactions[0].amount).toBe(100)
-    expect(transactionRepository.transactions[0].sourceWallet.balance).toBe(0)
-    expect(transactionRepository.transactions[0].dirWallet.balance).toBe(200)
+    expect(transactionRepository.transactions[0].sourceWallet.balance).toBe(900)
+    expect(transactionRepository.transactions[0].dirWallet.balance).toBe(1100)
   })
 })

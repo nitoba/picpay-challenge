@@ -27,6 +27,10 @@ export class Costumer extends Entity<CostumerProps> {
     return this.props.documentType
   }
 
+  get password() {
+    return this.props.password
+  }
+
   static create(props: CostumerProps, id?: UniqueEntityID): Costumer {
     return new Costumer(props, id)
   }

@@ -27,6 +27,10 @@ export class Retailer extends Entity<RetailerProps> {
     return this.props.documentType
   }
 
+  get password() {
+    return this.props.password
+  }
+
   static create(props: RetailerProps, id?: UniqueEntityID): Retailer {
     return new Retailer(props, id)
   }

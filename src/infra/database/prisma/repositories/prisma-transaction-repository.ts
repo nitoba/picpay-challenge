@@ -9,7 +9,7 @@ export class PrismaTransactionRepository implements TransactionRepository {
   async save(transaction: Transaction): Promise<boolean> {
     try {
       await this.prisma.$transaction([
-        this.prisma.transaction.create({
+        this.prisma.transition.create({
           data: {
             id: transaction.id.toString(),
             amount: transaction.amount,
@@ -22,7 +22,7 @@ export class PrismaTransactionRepository implements TransactionRepository {
             id: transaction.sourceWallet.id.toString(),
           },
           data: {
-            balance: transaction.sourceWallet.balance - transaction.amount,
+            balance: transaction.sourceWallet.balance,
           },
         }),
         this.prisma.wallet.update({
@@ -30,7 +30,7 @@ export class PrismaTransactionRepository implements TransactionRepository {
             id: transaction.dirWallet.id.toString(),
           },
           data: {
-            balance: transaction.dirWallet.balance + transaction.amount,
+            balance: transaction.dirWallet.balance,
           },
         }),
       ])

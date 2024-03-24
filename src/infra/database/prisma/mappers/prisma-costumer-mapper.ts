@@ -10,7 +10,7 @@ export class PrismaCostumerMapper {
         name: raw.name,
         email: raw.email,
         documentNumber: raw.documentNumber,
-        documentType: raw.documentType as unknown as DocumentType,
+        documentType: raw.documentType.toLowerCase() as unknown as DocumentType,
         password: undefined,
       },
       new UniqueEntityID(raw.id),
