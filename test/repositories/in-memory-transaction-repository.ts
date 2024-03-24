@@ -5,8 +5,9 @@ import { Transaction } from '@/domain/transaction/enterprise/entities/transactio
 export class InMemoryTransactionRepository implements TransactionRepository {
   transactions: Transaction[] = []
 
-  async save(transaction: Transaction): Promise<void> {
+  async save(transaction: Transaction): Promise<boolean> {
     this.transactions.push(transaction)
     DomainEvents.dispatchEventsForAggregate(transaction.id)
+    return true
   }
 }

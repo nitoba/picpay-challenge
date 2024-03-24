@@ -15,7 +15,11 @@ describe('Transaction Service', () => {
       ownerType: 'costumer',
     }).value as Wallet
 
-    const result = TransactionService.transaction(sourceWallet, dirWallet, 50)
+    const result = TransactionService.makeTransaction(
+      sourceWallet,
+      dirWallet,
+      50,
+    )
 
     expect(result.isRight()).toBeTruthy()
     expect(sourceWallet.balance).toBe(50)
@@ -34,7 +38,11 @@ describe('Transaction Service', () => {
       balance: 200,
     }).value as Wallet
 
-    const result = TransactionService.transaction(sourceWallet, dirWallet, 50)
+    const result = TransactionService.makeTransaction(
+      sourceWallet,
+      dirWallet,
+      50,
+    )
 
     expect(result.isLeft()).toBeTruthy()
     expect(sourceWallet.balance).toBe(10)
@@ -53,10 +61,10 @@ describe('Transaction Service', () => {
       balance: 200,
     }).value as Wallet
 
-    let result = TransactionService.transaction(sourceWallet, dirWallet, 0)
+    let result = TransactionService.makeTransaction(sourceWallet, dirWallet, 0)
     expect(result.isLeft()).toBeTruthy()
 
-    result = TransactionService.transaction(sourceWallet, dirWallet, -10)
+    result = TransactionService.makeTransaction(sourceWallet, dirWallet, -10)
     expect(result.isLeft()).toBeTruthy()
 
     expect(sourceWallet.balance).toBe(10)

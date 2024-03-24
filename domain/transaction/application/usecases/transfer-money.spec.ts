@@ -111,6 +111,33 @@ describe('Transaction Money UseCase', () => {
     expect(result.isLeft()).toBe(true)
   })
 
+  it('should not able to transaction money if error happen on save transaction', async () => {
+    const transactionRepositorySpy = vi.spyOn(transactionRepository, 'save')
+
+    transactionRepositorySpy.mockResolvedValue(false)
+
+    const costumer = makeCostumer()
+    const payee = makeCostumer()
+    const sourceWallet = makeWallet({ ownerId: costumer.id, balance: 100 })
+    const dirWallet = makeWallet({ ownerId: payee.id, balance: 100 })
+    walletRepository.wallets.push(...[sourceWallet, dirWallet])
+    costumerRepository.costumers.push(...[costumer, payee])
+
+    const result = await useCase.execute({
+      amount: 100,
+      payerId: costumer.id.toString(),
+      payeeId: payee.id.toString(),
+    })
+
+    expect(result.isLeft()).toBe(true)
+    expect(transactionRepository.transactions).toHaveLength(0)
+
+    console.log(walletRepository.wallets)
+
+    expect(walletRepository.wallets[0].balance).toBe(100)
+    expect(walletRepository.wallets[1].balance).toBe(100)
+  })
+
   it('should able to transaction money', async () => {
     const costumer = makeCostumer()
     const payee = makeCostumer()

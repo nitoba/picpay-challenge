@@ -1,7 +1,6 @@
 import { Either, left, right } from '@/core/either'
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
 import { WalletRepository } from '../repositories/wallet-repository'
-import { Transaction } from '../../enterprise/entities/transaction'
 import { TransactionRepository } from '../repositories/transaction-repository'
 import { TransactionService } from '../../enterprise/services/transaction-service'
 import { TransactionGateway } from '../gateways/transaction-gateway'
@@ -38,10 +37,6 @@ export class TransferMoneyUseCase {
       return left(new Error('Payer Wallet not found'))
     }
 
-    if (payerWallet.ownerType !== 'costumer') {
-      return left(new Error('Payer is not a Costumer'))
-    }
-
     const payeeWallet = await this.walletRepository.findByOwnerId(
       new UniqueEntityID(payeeId),
     )
@@ -50,30 +45,32 @@ export class TransferMoneyUseCase {
       return left(new Error('Payee Wallet not found'))
     }
 
-    const result = TransactionService.transaction(
+    const transaction = TransactionService.makeTransaction(
       payerWallet,
       payeeWallet,
       amount,
     )
 
-    if (result.isLeft()) {
-      return left(result.value)
+    if (transaction.isLeft()) {
+      return left(transaction.value)
     }
 
-    const transaction = Transaction.create({
-      amount,
-      sourceWallet: payerWallet,
-      dirWallet: payeeWallet,
-    })
-
     const isAuthorizedToTransaction =
-      await this.transactionGateway.isAuthorizedToTransaction(transaction)
+      await this.transactionGateway.isAuthorizedToTransaction(transaction.value)
 
     if (!isAuthorizedToTransaction) {
       return left(new Error('Unauthorized to transaction'))
     }
 
-    await this.transactionRepository.save(transaction)
+    const resultTransaction = await this.transactionRepository.save(
+      transaction.value,
+    )
+
+    if (!resultTransaction) {
+      TransactionService.rollbackTransaction(payerWallet, payeeWallet, amount)
+      transaction.value.clearEvents()
+      return left(new Error('Error while transferring money'))
+    }
 
     return right(undefined)
   }
