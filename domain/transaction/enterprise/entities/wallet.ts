@@ -5,6 +5,7 @@ import { InvalidBalanceError } from './errors/invalid-balance-error'
 
 export interface WalletProps {
   ownerId: UniqueEntityID
+  ownerType: 'costumer' | 'retailer'
   balance: number
 }
 
@@ -15,6 +16,10 @@ export class Wallet extends Entity<WalletProps> {
 
   get balance() {
     return this.props.balance
+  }
+
+  get ownerType() {
+    return this.props.ownerType
   }
 
   debit(amount: number): Either<InvalidBalanceError, void> {

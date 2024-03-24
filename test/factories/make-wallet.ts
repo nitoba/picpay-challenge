@@ -12,6 +12,7 @@ export function makeWallet(
     {
       balance: Math.round(Math.random() * 100),
       ownerId: new UniqueEntityID(),
+      ownerType: 'costumer',
       ...override,
     },
     id,

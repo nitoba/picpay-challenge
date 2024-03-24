@@ -5,6 +5,7 @@ import { InMemoryTransferRepository } from '@/test/repositories/in-memory-transf
 import { makeCostumer } from '@/test/factories/make-costumer'
 import { makeWallet } from '@/test/factories/make-wallet'
 import { FakeTransferGateway } from '@/test/gateways/fake-transfer-gateway'
+import { makeRetailer } from '@/test/factories/make-retailer'
 
 describe('Transfer Money UseCase', () => {
   let useCase: TransferMoneyUseCase
@@ -28,8 +29,8 @@ describe('Transfer Money UseCase', () => {
   it('should not be able to transfer money if amount is not valid', async () => {
     const result = await useCase.execute({
       amount: 0,
-      payer: 'invalid-id',
-      payee: 'valid-id',
+      payerId: 'invalid-id',
+      payeeId: 'valid-id',
     })
 
     expect(result.isLeft()).toBe(true)
@@ -37,30 +38,16 @@ describe('Transfer Money UseCase', () => {
     expect(result.value).toEqual(new Error('Amount must be greater than 0'))
   })
 
-  it('should not be able to transfer money if costumer not exists', async () => {
+  it('should not be able to transfer money if payer wallet not exists', async () => {
     const result = await useCase.execute({
       amount: 100,
-      payer: 'invalid-id',
-      payee: 'valid-id',
+      payerId: 'invalid-id',
+      payeeId: 'valid-id',
     })
 
     expect(result.isLeft()).toBe(true)
 
-    expect(result.value).toEqual(new Error('Costumer not found'))
-  })
-
-  it('should not be able to transfer money if wallet costumer not exists', async () => {
-    const costumer = makeCostumer()
-    costumerRepository.costumers.push(costumer)
-    const result = await useCase.execute({
-      amount: 100,
-      payer: costumer.id.toString(),
-      payee: 'valid-id',
-    })
-
-    expect(result.isLeft()).toBe(true)
-
-    expect(result.value).toEqual(new Error('Costumer Wallet not found'))
+    expect(result.value).toEqual(new Error('Payer Wallet not found'))
   })
 
   it('should not be able to transfer money if wallet payee not exists', async () => {
@@ -70,13 +57,13 @@ describe('Transfer Money UseCase', () => {
     costumerRepository.costumers.push(costumer)
     const result = await useCase.execute({
       amount: 100,
-      payer: costumer.id.toString(),
-      payee: 'valid-id',
+      payerId: costumer.id.toString(),
+      payeeId: 'valid-id',
     })
 
     expect(result.isLeft()).toBe(true)
 
-    expect(result.value).toEqual(new Error('Dir Wallet not found'))
+    expect(result.value).toEqual(new Error('Payee Wallet not found'))
   })
 
   it('should not be able to transfer money if gateway was not authorized', async () => {
@@ -96,12 +83,33 @@ describe('Transfer Money UseCase', () => {
 
     const result = await useCase.execute({
       amount: 100,
-      payer: costumer.id.toString(),
-      payee: payee.id.toString(),
+      payerId: costumer.id.toString(),
+      payeeId: payee.id.toString(),
     })
 
     expect(result.isLeft()).toBe(true)
     expect(result.value).toEqual(new Error('Unauthorized to transfer'))
+  })
+
+  it('should not be able to transfer money from retailer payer', async () => {
+    const costumer = makeRetailer()
+    const payee = makeCostumer()
+    const sourceWallet = makeWallet({
+      ownerId: costumer.id,
+      balance: 100,
+      ownerType: 'retailer',
+    })
+    const dirWallet = makeWallet({ ownerId: payee.id, balance: 100 })
+    walletRepository.wallets.push(...[sourceWallet, dirWallet])
+    costumerRepository.costumers.push(...[costumer, payee])
+
+    const result = await useCase.execute({
+      amount: 100,
+      payerId: costumer.id.toString(),
+      payeeId: payee.id.toString(),
+    })
+
+    expect(result.isLeft()).toBe(true)
   })
 
   it('should able to transfer money', async () => {
@@ -114,8 +122,8 @@ describe('Transfer Money UseCase', () => {
 
     const result = await useCase.execute({
       amount: 100,
-      payer: costumer.id.toString(),
-      payee: payee.id.toString(),
+      payerId: costumer.id.toString(),
+      payeeId: payee.id.toString(),
     })
 
     expect(result.isRight()).toBe(true)

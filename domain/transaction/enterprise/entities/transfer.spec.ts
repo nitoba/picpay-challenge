@@ -7,14 +7,15 @@ describe('Transfer', () => {
     const result = Transfer.create({
       amount: 100,
       sourceWallet: Wallet.create({
+        ownerType: 'costumer',
         ownerId: new UniqueEntityID(),
         balance: 100,
       }).value as Wallet,
       dirWallet: Wallet.create({
+        ownerType: 'costumer',
         ownerId: new UniqueEntityID(),
         balance: 100,
       }).value as Wallet,
-      status: 'pending',
     })
 
     expect(result).toBeInstanceOf(Transfer)

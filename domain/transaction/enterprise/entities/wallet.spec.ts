@@ -5,6 +5,7 @@ import { InvalidBalanceError } from './errors/invalid-balance-error'
 describe('Wallet', () => {
   it('should create a wallet', () => {
     const result = Wallet.create({
+      ownerType: 'costumer',
       ownerId: new UniqueEntityID(),
       balance: 100,
     })
@@ -14,6 +15,7 @@ describe('Wallet', () => {
 
   it('should not be able to create a wallet with a negative balance', () => {
     const result = Wallet.create({
+      ownerType: 'costumer',
       ownerId: new UniqueEntityID(),
       balance: -100,
     })
@@ -24,6 +26,7 @@ describe('Wallet', () => {
 
   it('should not be able to debit from wallet', () => {
     const wallet = Wallet.create({
+      ownerType: 'costumer',
       ownerId: new UniqueEntityID(),
       balance: 100,
     })
@@ -37,6 +40,7 @@ describe('Wallet', () => {
 
   it('should be able to debit from wallet', () => {
     const wallet = Wallet.create({
+      ownerType: 'costumer',
       ownerId: new UniqueEntityID(),
       balance: 100,
     })
@@ -51,6 +55,7 @@ describe('Wallet', () => {
 
   it('should be able to credit to wallet', () => {
     const wallet = Wallet.create({
+      ownerType: 'costumer',
       ownerId: new UniqueEntityID(),
       balance: 100,
     })

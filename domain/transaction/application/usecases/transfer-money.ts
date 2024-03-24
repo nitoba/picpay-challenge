@@ -9,8 +9,8 @@ import { TransferGateway } from '../gateways/transfer-gateway'
 
 type TransferMoneyRequest = {
   amount: number
-  payer: string
-  payee: string
+  payerId: string
+  payeeId: string
 }
 
 type TransferMoneyResponse = Either<Error, void>
@@ -25,38 +25,34 @@ export class TransferMoneyUseCase {
 
   async execute({
     amount,
-    payer,
-    payee,
+    payerId,
+    payeeId,
   }: TransferMoneyRequest): Promise<TransferMoneyResponse> {
     if (amount <= 0) {
       return left(new Error('Amount must be greater than 0'))
     }
 
-    const costumer = await this.costumerRepository.findById(
-      new UniqueEntityID(payer),
+    const payerWallet = await this.walletRepository.findByOwnerId(
+      new UniqueEntityID(payerId),
     )
 
-    if (!costumer) {
-      return left(new Error('Costumer not found'))
+    if (!payerWallet) {
+      return left(new Error('Payer Wallet not found'))
     }
 
-    const costumerWallet = await this.walletRepository.findByOwnerId(
-      costumer.id,
+    if (payerWallet.ownerType !== 'costumer') {
+      return left(new Error('Payer is not a Costumer'))
+    }
+
+    const payeeWallet = await this.walletRepository.findByOwnerId(
+      new UniqueEntityID(payeeId),
     )
 
-    if (!costumerWallet) {
-      return left(new Error('Costumer Wallet not found'))
+    if (!payeeWallet) {
+      return left(new Error('Payee Wallet not found'))
     }
 
-    const dirWallet = await this.walletRepository.findByOwnerId(
-      new UniqueEntityID(payee),
-    )
-
-    if (!dirWallet) {
-      return left(new Error('Dir Wallet not found'))
-    }
-
-    const result = TransferService.transfer(costumerWallet, dirWallet, amount)
+    const result = TransferService.transfer(payerWallet, payeeWallet, amount)
 
     if (result.isLeft()) {
       return left(result.value)
@@ -64,8 +60,8 @@ export class TransferMoneyUseCase {
 
     const transfer = Transfer.create({
       amount,
-      sourceWallet: costumerWallet,
-      dirWallet,
+      sourceWallet: payerWallet,
+      dirWallet: payeeWallet,
     })
 
     const isAuthorizedToTransfer =
