@@ -35,7 +35,7 @@ The application follows the following design patterns:
 
 ## 🔄 Domain Events
 
-One of the differentials of this application is the use of the concept of **Domain Events** to update the vote count when a new vote is registered or changed. This ensures that the business logic related to vote counting remains consistent.
+One of the highlights of this solution is the use of **Domain Events**. This concept ensures data consistency when a user performs a transfer and a notification must be sent to the end user. By taking advantage of domain events, the business logic related to sending notifications is decoupled from the core of the application, which is making money transfers. In the future it is even possible to abstract this part of the application to another service running on any other technology.
 
 ## 🎯 Main Features
 
