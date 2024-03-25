@@ -64,6 +64,7 @@ To run this application, you need to have [NodeJS](https://golang.org/) and [Doc
 ## 🧑‍💻 Possible improvements
 - Authentication services for the system
 - Separate the domain of the application into other bounded contexts for better maintenance, scalability and readability of the project
+- Use of Value Objects: Value objects offer a more interesting way of typing data given the specific behaviors that each piece of data can have, such as an Email, CPF or CNPJ that have specific data formats and their own validations.
 - Add observability features for metrics and logs
 - Store notification messages for history
 - Possible better abstraction to deal with sending SMS or email
