@@ -1,5 +1,8 @@
 # 📊 Pic Pay Challenge
 
+![Linguagem mais utilizada](https://img.shields.io/github/languages/top/nitoba/picpay-challenge)
+![Último commit](https://img.shields.io/github/last-commit/nitoba/picpay-challenge)
+
 ## 🚀 Introduction
 Solution for the PicPay challenge aimed at backend.
 The requirements for the challenge can be found [here](https://github.com/PicPay/picpay-desafio-backend)
