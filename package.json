@@ -15,6 +15,9 @@
     "start:prod": "node dist/main",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix"
   },
+  "prisma": {
+    "seed": "tsx src/infra/database/prisma/seed.ts"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
@@ -45,6 +48,7 @@
     "eslint": "^8.57.0",
     "prisma": "^5.11.0",
     "supertest": "^6.3.3",
+    "tsx": "^4.7.1",
     "typescript": "^5.4.3",
     "unplugin-swc": "^1.4.4",
     "vite-tsconfig-paths": "^4.3.2",
