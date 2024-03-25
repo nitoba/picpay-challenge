@@ -1,80 +1,81 @@
 # 📊 Pic Pay Challenge
 
-## 🚀 Introdução
-Resolução do desafio do PicPay direcionado a backend.
-Os requisitos para o desafio podem ser encontrados [aqui](https://github.com/PicPay/picpay-desafio-backend)
+## 🚀 Introduction
+Solution for the PicPay challenge aimed at backend.
+The requirements for the challenge can be found [here](https://github.com/PicPay/picpay-desafio-backend)
 
 
-## 👨‍💻 Tecnologias
+## 👨‍💻 Technologies
 
-- [Javascript/Typescript](https://developer.mozilla.org/pt-BR/docs/Web/JavaScript): Linguagem de programação principal.
-- [NodeJS](https://nodejs.org/en): Plataforma para executar Javascript
-- [PostgreSQL](https://www.postgresql.org/): Banco de dados relacional para armazenar dados persistentes.
-- [NestJS](https://nestjs.com/): Framework web para construir APIs em NodeJS.
-- [Prisma ORM](https://www.prisma.io/): ORM (Object-Relational Mapping) para comunicação com o banco de dados.
-- [Docker](https://www.docker.com/): Ambiente de desenvolvimento para o PostgreSQL e Redis.
-- [RabbitMQ](https://www.rabbitmq.com/): Message broker para lidar com comunicação assíncrona através de filas
+- [Javascript/Typescript](https://developer.mozilla.org/pt-BR/docs/Web/JavaScript): Main programming language.
+- [NodeJS](https://nodejs.org/en): Platform to run Javascript
+- [PostgreSQL](https://www.postgresql.org/): Relational database to store persistent data.
+- [NestJS](https://nestjs.com/): Web framework for building APIs in NodeJS.
+- [Prisma ORM](https://www.prisma.io/): ORM (Object-Relational Mapping) for communication with the database.
+- [Docker](https://www.docker.com/): Development environment for PostgreSQL and Redis.
+- [RabbitMQ](https://www.rabbitmq.com/): Message broker to handle asynchronous communication through queues
 
-## 🏗️ Padrões de Projeto
+## 🏗️ Design Patterns
 
-A aplicação segue os seguintes padrões de projeto:
+The application follows the following design patterns:
 
-1. **Clean Architecture**: A estrutura do projeto é organizada em camadas (entidades, use cases, interfaces) para separar as preocupações e facilitar a manutenção.
+1. **Clean Architecture**: The project structure is organized in layers (entities, use cases, interfaces) to separate concerns and facilitate maintenance.
 
-2. **Domain Driven Design (DDD)**: O design do software é orientado pelo domínio, com foco nas regras de negócio e nas entidades principais.
+2. **Domain Driven Design (DDD)**: The software design is domain-oriented, focusing on business rules and main entities.
 
-3. **Injeção de Dependência**: A inversão de controle e injeção de dependência são utilizadas para garantir a flexibilidade e testabilidade do código.
+3. **Dependency Injection**: Inversion of control and dependency injection are used to ensure code flexibility and testability.
 
-4. **Testes automatizados**: Os testes unitários, integração e end-2-end são escritos para garantir a qualidade do código.
+4. **Automated Testing**: Unit, integration and end-2-end tests are written to ensure code quality.
 
-5. **Comunicação assíncrona**: A comunicação assíncrona dentro de um sistema trás a possibilidade de fazem as partes se comunicarem através de mensagens, sem esperar uma resposta imediata.
+5. **Asynchronous Communication**: Asynchronous communication within a system brings the possibility of making parts communicate through messages, without waiting for an immediate response.
 
 ## 🔄 Domain Events
 
-Um dos diferenciais dessa aplicação é a utilização do conceito de **Domain Events** para atualizar a contagem de votos quando um novo voto é registrado ou alterado. Isso garante que a lógica de negócio relacionada à contagem de votos permaneça consistente.
+One of the differentials of this application is the use of the concept of **Domain Events** to update the vote count when a new vote is registered or changed. This ensures that the business logic related to vote counting remains consistent.
 
-## 🎯 Principais Funcionalidades
+## 🎯 Main Features
 
-- [x] Executar operações de transferência de dinheiro entre usuários
+- [x] Perform money transfer operations between users
 
-## 🔧 Rodando o projeto
+## 🔧 Running the project
 
-Para rodar essa aplicação, você precisa ter o [NodeJS](https://golang.org/) e o [Docker](https://www.docker.com/) instalados em sua máquina.
+To run this application, you need to have [NodeJS](https://golang.org/) and [Docker](https://www.docker.com/) installed on your machine.
 
-- Rode o comando `touch .env .env.test && cp .env.example .env .env.test` para criar os arquivos de variáveis de ambiente.
-- Inicie os serviços do docker usando: `docker-compose up -d`
-- Rode o comando `pnpm i` para baixar as dependências. Você pode usar o gerenciado de pacotes que desejar
-- Rode o comando `pnpm prisma migrate deploy` para aplicar as migrations ao banco de dados.
-- Rode o comando `pnpm prisma db seed` para popular o banco de dados com alguns dados iniciais
-- Rode o comando `pnpm dev` para iniciar a aplicação.
-- Abra o arquivo `client.http`na raiz do projeto para chamar a rota http que realiza a operação. Importante ter a extensão [Rest Client](https://marketplace.visualstudio.com/items?itemName=humao.rest-client) instalada no VsCode
+- Run the command `touch .env .env.test && cp .env.example .env .env.test` to create environment variable files.
+- Start the docker services using: `docker-compose up -d`
+- Run the command `pnpm i` to download the dependencies. You can use the package manager you prefer
+- Run the command `pnpm prisma migrate deploy` to apply the migrations to the database.
+- Run the command `pnpm prisma db seed` to populate the database with some initial data
+- Run the command `pnpm dev` to start the application.
+- Open the `client.http` file at the root of the project to call the http route that performs the operation. It is important to have the [Rest Client](https://marketplace.visualstudio.com/items?itemName=humao.rest-client) extension installed in VsCode
 
-## 🧪 Testes
+## 🧪 Tests
 
-- Rode o comando `pnpm test` para executar os testes unitários
-- Rode o comando `pnpm test:e2e` para executar os testes end-to-end
+- Run the command `pnpm test` to run the unit tests
+- Run the command `pnpm test:e2e` to run the end-to-end tests
 
-## ✍🏽 Aprendizados importantes
-- Comunicação entre serviços externos e como trazer resiliência para o projeto visto que serviços externos podem sofrer instabilidades
+## ✍🏽 Important learnings
+- Communication between external services and how to bring resilience to the project since external services may suffer instabilities
 
-## 🧑‍💻 Possíveis melhorias
-- Serviços de autenticação para o sistema
-- Separar o domínio da aplicação em outros bounded contexts para uma maior manutenção, escalabilidade e legibilidade do projeto
-- Adicionar recursos de observabilidades para métricas e logs
-- Armazenar as mensagens de notificações para histórico
-- Possível melhor abstração para lidar com envio de sms ou email
+## 🧑‍💻 Possible improvements
+- Authentication services for the system
+- Separate the domain of the application into other bounded contexts for better maintenance, scalability and readability of the project
+- Add observability features for metrics and logs
+- Store notification messages for history
+- Possible better abstraction to deal with sending SMS or email
 
 ## 📝 Application flow
 <img src="./.github/flow.png" style="width: 500px; height: auto;" />
 
-## 📄 Licença
+## 📄 License
 
-Esse projeto está sob a licença MIT. Acesse o link [LICENSE](https://mit-license.org/) para mais detalhes.
+This project is under the MIT license. Access the link [LICENSE](https://mit-license.org/) for more details.
 
 ## 🌐 GitHub
 
-O código-fonte da aplicação pode ser encontrado no GitHub: [Link do Projeto](https://github.com/nitoba/picpay-challenge)
+The source code of the application can be found on GitHub: [Project Link](https://github.com/nitoba/picpay-challenge)
 
-## 📧 Contato
+## 📧 Contact
 
-Em caso de dúvidas ou sugestões, entre em contato através do e-mail: [nito.ba.dev@gmail.com](mailto:nito.ba.dev@gmail.com).
+In case of doubts or suggestions, contact us through the email: [nito.ba.dev@gmail.com](mailto:nito.ba.dev@gmail.com).
+
